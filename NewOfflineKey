@@ -26,10 +26,9 @@ try {
   MysqlInit();
 
   $result = TryToLogin();
-  if(!is_numeric($result)) $json->ex($result);
+  if(is_string($result)) $json->ex($result);
 
-  $uid = $result;
-  $userName = trim($_REQUEST['UserName']);
+  list($uid,$userName) = $result;
   
   $result = MysqlQueryOne("SELECT Created,Deactivated FROM Macs WHERE Mac=x'$mac' AND Uid=$uid;");
   if($result === 0) {

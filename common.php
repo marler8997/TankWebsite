@@ -14,7 +14,7 @@ function addLoginAttempt($ip)
   }
 }
 
-// Returns Uid on success, and error message on error
+// returns string on error, otherwise returns array(uid,userName)
 function TryToLogin() {
   try {
     list($ip,$genTime,$lastRequest,$logins) = MysqlIPLoginSession();
@@ -37,7 +37,7 @@ function TryToLogin() {
     $password = mysql_real_escape_string($password);
 
     // Get Salt/Password
-    $result = MysqlQueryOne("SELECT uid,salt,passwordHash FROM Users WHERE UserName='$userName';");
+    $result = MysqlQueryOne("SELECT Uid,Salt,PasswordHash FROM Users WHERE UserName='$userName';");
     if($result === 0) {
       // Invalid UserName
       addLoginAttempt($ip);
@@ -51,7 +51,7 @@ function TryToLogin() {
       return "Either user name '$userName' or password is invalid";
     }
 
-    return $uid;
+    return array($uid,$userName);
 
   } catch(MysqlException $me) {
     return 'Server Error: your reference number is '.$me->logRefNum;

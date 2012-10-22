@@ -1,0 +1,73 @@
+*{margin:0;padding:0;}
+body {
+  background:#333;
+  text-align:center;
+}
+
+a:link{text-decoration:none;}
+a:visited{text-decoration:none;}
+a:active{text-decoration:none;}
+a:hover{text-decoration:none;}
+
+.Error {
+  color:red;
+}
+
+#PageDiv {
+  position:relative;
+  background-color:#ddd;
+  margin:0 auto;
+  width:800px;
+  text-align:left;
+}
+
+#HeaderDiv {
+  text-align:center;
+}
+#UserNameDiv {
+  text-align:right;
+  background:#222;
+  color:#fff;
+  padding:5px;
+}
+
+#NavDiv {
+}
+#BodyDiv {
+  margin:10px;
+  min-height:500px;
+}
+
+
+.Button {
+background:#222;
+color: #fff;
+font-weight:800;text-shadow:0 1px #bbb;
+cursor:pointer;
+display:inline-block;
+border:1px solid #333;
+padding:4px 10px;
+border-radius: 5px;-moz-border-radius: 5px;-webkit-border-radius: 5px;
+box-shadow:#000 0 1px 0;-moz-box-shadow:#000 0 1px 0;-webkit-box-shadow:#000 0 1px 0;
+text-decoration: none;
+vertical-align: middle;
+}
+.Button:hover {
+background:#333;
+color:#eee;
+}
+.Button:active {
+background:#fff;
+}
+.Button.inactive {
+cursor:auto;    
+background: #f73;
+color: #ccc;
+}
+/*
+.Button.inactive:hover{
+border-top-color: #000;
+background: #de5e18;
+color: #cccccc;
+}
+*/

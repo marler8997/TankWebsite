@@ -66,15 +66,10 @@ function MysqlCount($result) {
   return $count;
 }
 
-// if query does not return exactly one entry
-// then an exception is thrown
-// NOTE: you should probably only call this if you know for sure that mysql not returning
-//       a single row is a bug in your code.  If the condiitons depend on the client data you should
-//       just use MysqlQueryOne instead and return a custom error if 1 row isn't returned
-function MysqlOne($query) {
+function MysqlOneRow($query) {
   $result = mysql_query($query);
   if($result === FALSE) {
-    $logRefNum = code_error_with_ref(__FILE__,__LINE__,"MysqlOne('$query') failed: ".mysql_error());
+    $logRefNum = code_error_with_ref(__FILE__,__LINE__,"MysqlOneRow('$query') failed: ".mysql_error());
     throw new MysqlException($logRefNum);
   }
 
@@ -84,13 +79,21 @@ function MysqlOne($query) {
     throw new MysqlException($logRefNum);
   }  
 
-  if($count == 1) {
-    $row = mysql_fetch_row($result);
-    return $row[0];
-  }
+  if($count == 1) return mysql_fetch_row($result);
 
   $logRefNum = code_error_with_ref(__FILE__,__LINE__,"mysql_num_rows after query '$query' failed: ".mysql_error());
   throw new MysqlQueryOneException($logRefNum, $count);
+}
+
+
+// if query does not return exactly one entry
+// then an exception is thrown
+// NOTE: you should probably only call this if you know for sure that mysql not returning
+//       a single row is a bug in your code.  If the condiitons depend on the client data you should
+//       just use MysqlQueryOne instead and return a custom error if 1 row isn't returned
+function MysqlOne($query) {
+  $row = MysqlOneRow($query);
+  return $row[0];
 }
 
 // $result = MysqlQueryOne('query');
@@ -193,12 +196,12 @@ function MysqlNewSession($ip,$uid)
 
 // call: $result = MysqlSession();
 //       if($result === 0) { session not found }
-//       list($sid,$genTime,$uid,$gid,$lastRequest,$ip) = $result;
+//       list($sid,$genTime,$uid,$lastRequest,$ip) = $result;
 // throws: MysqlException (or MysqlQueryOneException) on error
 function MysqlSession()
 {
-  if(!isset($_COOKIE["sid"])) return 0;
-  $sid = $_COOKIE["sid"];
+  if(!isset($_COOKIE["Sid"])) return 0;
+  $sid = $_COOKIE["Sid"];
   return MysqlQueryOne("SELECT * FROM Sessions WHERE sid='".$sid."';");
 }
 

@@ -1,18 +1,15 @@
 <?php 
-
-if(isset($_REQUEST['Logout'])) setcookie('Sid','',1);
-
 include('master_login.php');
 ob_start();
 ?>
 
-Tank the game!!
+Your offline keys
 
 <?php
   $bodyContent = ob_get_contents();
   ob_end_clean();
   
-  $pageTitle = 'Home';
+  $pageTitle = 'OfflineKeys';
 
   include('master.php');
 ?>

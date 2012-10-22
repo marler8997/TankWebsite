@@ -2,6 +2,7 @@ CREATE TABLE Users (
   Uid          INT UNSIGNED     PRIMARY KEY AUTO_INCREMENT,
   UserName     VARCHAR(64)      NOT NULL UNIQUE,
   Email        VARCHAR(128)     NOT NULL UNIQUE,
+  AllowPlay    BOOLEAN          NOT NULL,
   Salt         CHAR(40)         NOT NULL,
   PasswordHash CHAR(40)         NOT NULL,
   FirstName    VARCHAR(64)      NOT NULL,
@@ -44,7 +45,21 @@ CREATE TABLE Macs (
 INSERT INTO Users VALUES (
   /*uid         */  0,
   /*UserName    */ 'marler8997',
-  /*email       */ 'marler@capp.com',
+  /*email       */ 'marler8997@vandals.uidaho.edu',
+  /*allow play  */ TRUE,
+  /*salt        */ '2aacfbac8a63b589badf3b4fb2539c1ba3e28228',
+  /*passwordhash*/ '7eae35d3ac68603098451b236f642eb7c8b2cf8a', /* password is 'password' */
+  /*fname       */ 'Jonathan',
+  /*lname       */ 'Marler',
+  /*phone       */ '5093961137',
+  /*addr        */ '2263 E Sadie Dr',
+  /*city        */ 'Eagle',
+  /*state       */ 'ID'
+),(
+  /*uid         */  0,
+  /*UserName    */ 'jongyman',
+  /*email       */ 'jongyman@yahoo.com',
+  /*allow play  */ TRUE,
   /*salt        */ '2aacfbac8a63b589badf3b4fb2539c1ba3e28228',
   /*passwordhash*/ '7eae35d3ac68603098451b236f642eb7c8b2cf8a', /* password is 'password' */
   /*fname       */ 'Jonathan',
