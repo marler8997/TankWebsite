@@ -28,7 +28,7 @@ if($loggedIn) {
 <?php
 if($loggedIn) {
   echo '<div id="UserNameDiv">';
-  echo   $userName;
+  echo   'User Name: <span style="font-weight:bold;">'.$userName.'</span> ';
   echo   '<span class="Button" style="background:#aaa;color:#000;" onclick="logout()">Logout</span>';
   echo '</div>';
 } else {
@@ -47,14 +47,12 @@ if($loggedIn) {
     </div>
     <div id="NavDiv">
       <span id="HomeNavButton"     class="Button" onclick="window.location='/index.php'">Home</span>
-      <span id="DownloadNavButton" class="Button" onclick="window.location=\'/download.php\'">Download</span>
+      <span id="DownloadNavButton" class="Button" onclick="window.location='/download.php'">Download</span>
 <?php
 if($loggedIn) {
   echo '<span id="OfflineKeysNavButton" class="Button" onclick="window.location=\'/offlinekeys.php\'">Offline Keys</span>';
 } else {
 }
-
-
 
 ?>
     </div>
