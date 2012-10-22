@@ -1,0 +1,64 @@
+<?php
+
+require_once "common.php";
+require_once "mysql.php";
+require_once "json.php";
+require_once "rsa.php";
+
+header("Content-Type: application/json");
+$json = new JsonObject();
+
+try {
+
+  // Get Mac Address
+  if(!isset($_REQUEST['Mac'])) $json->ex('Missing Mac Address');
+  $mac = trim($_REQUEST['Mac']);
+  if(empty($mac)) $json->ex('Empty Mac Address');
+  if(!IsValidMacAddress($mac)) $json->ex("The Mac Address you supplied '$mac' is invalid");
+
+  // Get Device Name
+  if(!isset($_REQUEST['DeviceName'])) $json->ex('Missing Device Name');
+  $deviceName = trim($_REQUEST['DeviceName']);
+  if(empty($deviceName)) $json->ex('Empty Device Name');
+  if(!IsValidDeviceName($deviceName)) $json->ex("The Device Name you supplied '$deviceName' is invalid");
+  $deviceName = mysql_real_escape_string($deviceName);
+
+  MysqlInit();
+
+  $result = TryToLogin();
+  if(!is_numeric($result)) $json->ex($result);
+
+  $uid = $result;
+  $userName = trim($_REQUEST['UserName']);
+  
+  $result = MysqlQueryOne("SELECT Created,Deactivated FROM Macs WHERE Mac=x'$mac' AND Uid=$uid;");
+  if($result === 0) {
+
+    // Create new key
+
+    // Check how many mac addresses this user has
+    $count = MysqlOne("SELECT Count(Mac) FROM Macs WHERE Uid=$uid;");
+    if($count >= MAX_OFFLINE_KEYS) $json->ex("You can only register ".MAX_OFFLINE_KEYS." mac addresses per account");
+
+    MysqlQuery("INSERT INTO Macs VALUES(x'$mac',$uid,'$deviceName',NOW(),NULL);");
+  } else {
+
+    list($created,$deactivated) = $result;
+    if($deactivated) {
+      $json->addString('Result','Deactivated');
+      $json->ex();
+    }    
+
+  }
+
+  // create offline key
+  $macBinary = hex2bin($mac);
+  $json->addString('OfflineKey', CreateOfflineKeyBase64($macBinary, $userName));
+
+  $json->endAll();
+
+} catch(MysqlException $me) {
+  $json->ex('Server Error: your reference number is '.$me->logRefNum);
+}
+
+?>

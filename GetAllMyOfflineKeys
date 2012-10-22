@@ -1,0 +1,63 @@
+<?php
+
+require_once "common.php";
+require_once "mysql.php";
+require_once "json.php";
+require_once "rsa.php";
+
+header("Content-Type: application/json");
+$json = new JsonObject();
+
+try {
+
+  MysqlInit();
+
+  $result = TryToLogin();
+  if(!is_numeric($result)) $json->ex($result);
+
+  $uid = $result;
+  $userName = trim($_REQUEST['UserName']);
+  
+  $result = MysqlQuery("SELECT Mac,DeviceName,Created,Deactivated FROM Macs WHERE Uid=$uid;");
+  $count = MysqlCount($result);
+
+  $json->addNumber('OfflineKeyLimit'           , MAX_ACTIVATED_OFFLINE_KEYS);
+  $json->addNumber('DeactivatedOfflineKeyLimit', MAX_DEACTIVATED_OFFLINE_KEYS);
+
+  if($count <= 0) {
+    $json->addNull('OfflineKeys');    
+    $json->ex();
+  }
+
+  $json = $json->startArray('OfflineKeys');
+  while(TRUE) {
+    $row = mysql_fetch_row($result);
+    if(!$row) break;
+
+    $macBinary = $row[0];
+    $deviceName = $row[1];
+    $created = $row[2];
+    $deactivated = $row[3];
+
+    $json = $json->startObject();
+    $json->addString('Mac',bin2hex($macBinary));
+    $json->addString('DeviceName', $deviceName);
+    $json->addString('Created',$created);
+    if($deactivated) {
+      $json->addString('Deactivated', $deactivated);
+    } else {
+      $json->addNull('Deactivated');
+    }
+    $json->addString('OfflineKey',CreateOfflineKeyBase64($macBinary, $userName));
+    $json = $json->end();
+    
+  }
+  $json = $json->end();
+
+  $json->endAll();
+
+} catch(MysqlException $me) {
+  $json->ex('Server Error: your reference number is '.$me->logRefNum);
+}
+
+?>

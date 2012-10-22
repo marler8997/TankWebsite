@@ -1,0 +1,3 @@
+/etc/init.d/apache2 stop
+rm -f error.log access.log
+/etc/init.d/apache2 start

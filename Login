@@ -1,0 +1,23 @@
+<?php
+
+require_once "common.php";
+require_once "mysql.php";
+require_once "json.php";
+
+header("Content-Type: application/json");
+$json = new JsonObject();
+
+try {
+
+  MysqlInit();
+
+  $result = TryToLogin();
+  if(!is_numeric($result)) $json->ex($result);
+
+  $json->endAll();
+
+} catch(MysqlException $me) {
+  $json->ex('Server Error: your reference number is '.$me->logRefNum);
+}
+
+?>

@@ -1,0 +1,64 @@
+================================================================================
+Database Information
+================================================================================
+Database Setup:
+1. Create Database
+CREATE DATABASE tank;
+
+2. Create Global User
+CREATE USER tank;
+
+3. Add permissions to capp user
+GRANT ALL ON tank.* to tank;
+GRANT FILE ON *.* to tank;
+
+5. Create tables
+mysql -u tank tank < createTables.sql
+(or ./m < createTables.sql)
+
+NOTE: Each group has it's own set of tabes prefixed with 'group$(gid)...'
+
+
+================================================================================
+Allowing Offline Mode
+================================================================================
+A player may play the game using offline mode once they obtain an offline key.
+
+An offline key is a MAC address and UserName that have been encrypted by a private key on the server.
+This public/private key pair should never change.
+The public key will be built into the game executable so it would be almost impossible to modify. This is to prevent someone from injecting their own public key and then encrypting the MAC/UserName with their own private key.
+
+NOTE: The game client will obtain the machinese MAC address only if the client wants to register a new offline key or use an existing offline key.
+
+The game client will not allow offline play unless the offline key decrypts to the clients MAC address.
+
+NOTE: Since the offline key also contains the UserName, a computer can play offline as any user who has registered an offline key without providing that user's password.
+
+The game client can register new offline keys, but if the machine does not have internet access
+they may go to the website from another machine and manually enter their computer MAC and login information 
+to obtain an offline key for that machine.
+
+The number of MAC addresses a user can register will be limited (maybe 3?)
+
+Once a user registers a mac address, they can never unregister that mac address.
+However, they can contact the company if they run out of mac addresses to let the
+company know that they want to deactivate a mac address.
+This cannot prevent a client from using offline mode but it will allow the server
+to deny login requests from that mac address.
+The number of total mac addresses, including deactivated ones will be limited as well, (maybe 10)?
+
+
+The table will look like
+
+(byte[6]MacAddress, (int)Uid, (DateTime) Created, (DateTime)Deactivated
+
+
+Generating RSA keys
+
+cd rsa
+
+# private key
+openssl genrsa -out private.key 1024
+
+# public key
+openssl rsa -in private.key -out public.pem -outform PEM -pubout
