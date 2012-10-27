@@ -11,12 +11,10 @@ try {
 
   MysqlInit();
 
-  $result = TryToLogin();
+  $result = TryToLoginForGame();
   if(is_string($result)) $json->ex($result);
 
   list($uid,$userName) = $result;
-  $allowPlay = MysqlOne("SELECT AllowPlay FROM Users WHERE Uid=$uid;");
-  if(!$allowPlay) $json->ex('You user is not allowed to play, have you purchased the game?');
 
   $json->endAll();
 

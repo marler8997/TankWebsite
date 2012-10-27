@@ -51,7 +51,7 @@ $loginErrorMessage = null;
 try {
 
   // Register the user
-  MysqlQuery("INSERT INTO Users VALUES(0,'$userName','$email',FALSE,'$salt','$passwordHash','FirstName','LastName','8881114444',NULL,NULL,NULL);");
+  MysqlQuery("INSERT INTO Users VALUES(0,'$userName','$email',FALSE,FALSE,'$salt','$passwordHash','FirstName','LastName','8881114444',NULL,NULL,NULL);");
 
 } catch(MysqlException $me) {
   $loginErrorMessage = 'Server Error: your reference number is '.$me->logRefNum;

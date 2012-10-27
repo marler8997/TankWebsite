@@ -1,6 +1,4 @@
 <?php
-define('MAX_LOGINS',20);
-
 require_once('common.php');
 require_once('mysql.php');
 require_once('json.php');
@@ -19,7 +17,6 @@ try {
   if(is_string($result)) $json->ex($result);
 
   list($uid,$userName) = $result;
-
 
   MysqlNewSession($ip,$uid);
   

@@ -2,7 +2,7 @@
 $loggedIn = $_GLOBALS['LoggedIn'];
 if($loggedIn) {
   $uid      = $_GLOBALS['LoggedInUid'];
-  list($userName,$allowPlay) = MysqlOneRow("SELECT UserName,AllowPlay FROM Users WHERE Uid=$uid;");
+  list($userName) = MysqlOneRow("SELECT UserName FROM Users WHERE Uid=$uid;");
 }
 ?>
 

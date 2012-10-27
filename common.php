@@ -58,9 +58,44 @@ function TryToLogin() {
   }
 }
 
+function TryToLoginForGame() {
+  $loginResult = TryToLogin();
+  if(is_string($loginResult)) return $loginResult;
+
+  list($uid,$userName) = $loginResult;
+
+  // Get Mac Address
+  if(!isset($_REQUEST['Mac'])) return 'Missing Mac Address';
+  $mac = trim($_REQUEST['Mac']);
+  if(empty($mac)) return 'Empty Mac Address';
+  if(!IsValidMacAddress($mac)) return "The Mac Address you supplied '$mac' is invalid";
+
+  // Check if account is suspended
+  list($suspended,$paid) = MysqlOneRow("SELECT Suspended,PaidToPlay FROM Users WHERE Uid=$uid;");
+  if($suspended) return 'Your account has been suspended.';
+  if(!$paid) return 'You have not purchased the game for this account yet';
+
+  // Check that mac address is not deactivated
+  $result = MysqlQueryOne("SELECT Deactivated FROM Macs WHERE Uid=$uid AND Mac=x'$mac';");
+  if($result === 0) return $result;
+  
+  list($deactivated) = $result;
+  if($deactivated) {
+    MysqlQuery("UPDATE Users SET Suspended=TRUE WHERE Uid=$uid;");        
+    return "Your machine's MAC address has been deactivated.  Because you tried to login from this machine your account has been suspended.";
+  }
+
+  return $loginResult;
+}
+
+
 function CreateOfflineKeyBase64($macBinary, $userName) {
   $macBinaryEncrypted = PrivateKeyEncrypt($macBinary.$userName);
   return base64_encode($macBinaryEncrypted);
+}
+
+function CreateHostCredentialsBase64($userName, $hostUserName, $hostDateTime) {
+  return base64_encode(PrivateKeyEncrypt($userName.$hostUserName.$hostDateTime));
 }
 
 
