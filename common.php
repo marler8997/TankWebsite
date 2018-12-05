@@ -77,7 +77,7 @@ function TryToLoginForGame() {
 
   // Check that mac address is not deactivated
   $result = MysqlQueryOne("SELECT Deactivated FROM Macs WHERE Uid=$uid AND Mac=x'$mac';");
-  if($result === 0) return $result;
+  if($result === 0) return $loginResult;
   
   list($deactivated) = $result;
   if($deactivated) {
@@ -94,8 +94,8 @@ function CreateOfflineKeyBase64($macBinary, $userName) {
   return base64_encode($macBinaryEncrypted);
 }
 
-function CreateHostCredentialsBase64($userName, $hostUserName, $hostDateTime) {
-  return base64_encode(PrivateKeyEncrypt($userName.$hostUserName.$hostDateTime));
+function CreateHostCredentialsBase64($userName, $hostDateTime) {
+  return base64_encode(PrivateKeyEncrypt($userName.$hostDateTime));
 }
 
 

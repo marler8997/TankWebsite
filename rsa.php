@@ -3,7 +3,7 @@
 
 class RsaException extends RuntimeException {
   public function __construct($message = "") {
-    parent::__construct($message);
+    parent::__construct($message.": ".openssl_error_string());
   }
 }
 
